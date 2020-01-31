@@ -1,0 +1,153 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Api Prototype</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div id="loading" style="display:block">
+            <div class="row">
+                <div class="col-lg-12">....Loading</div>
+            </div>
+        </div>
+        <div id="login" style="display:none">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Login Page</h1>
+                </div>
+            </div>
+            <form>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Email address</label>
+                  <input type="email" class="form-control" id="username" placeholder="Email">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Password</label>
+                  <input type="password" class="form-control" id="password" placeholder="Password">
+                </div>
+                <button type="button" class="btn btn-default" onclick="loginToApp()">Submit</button>
+              </form>
+              <div id="status" style="display:none" class="row">
+                <div class="col-lg-12">
+                    <h3 id="status-message"></h3>
+                </div>
+            </div>
+        </div>
+        <div id="app-page" style="display:none">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Main App Page</h1>
+                </div>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label for="id">User ID</label>
+                    <input type="text" class="form-control" id="id">
+                </div>
+                <div class="form-group">
+                    <label for="full-name">Name</label>
+                    <input type="text" class="form-control" id="full-name">
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3>Available Movies</h3>
+                        <ul id="available-movie-list" class="list-group">
+                        </ul>
+                    </div>
+                </div>
+                <div id="purchases" class="row">
+                    <div class="col-lg-12">
+                        <h3>Purchased Movies</h3>
+                        <ul id="purchased-movie-list" class="list-group">
+                        </ul>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary" onclick="getMyPurchases()">Get Purchases</button>
+                <button type="button" class="btn btn-primary" onclick="logoutOfApp()">Logout</button>
+              </form>
+              <div id="status" style="display:none" class="row">
+                <div class="col-lg-12">
+                    <h3 id="status-message"></h3>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="text/JavaScript" src="api.js"></script>
+    <script type="text/JavaScript">
+    myPurchases = [];
+    appData = null;
+    auth()
+    function loginToApp () {
+        console.log("Login To App")
+        username = window.document.getElementById("username").value
+        password = window.document.getElementById("password").value
+        login(username, password)
+    }
+
+
+    function logoutOfApp () {
+        console.log("logout of App")
+        logout()
+    }
+    function getMyPurchases () {
+        console.log("getPurchases")
+        showStatusMessage("Getting Purchases .....");
+        getApi("/purchases?id=" + appData.id, {})
+            .then(data => {
+            console.log(data);
+            if (data.success) {
+                myPurchases = data.purchases;
+                hideStatusMessage();
+                renderPurchases();
+            } else {
+                switch (data.error) {
+                case 401:
+                    display("login")
+                    break;
+                default:
+                    display("login")
+                    break;
+                }
+            }
+            })
+            .catch(error => {
+            console.log("RESPONSE ERROR (rare) " + error);
+            return false;
+            });
+
+    }
+    function renderPage() {
+        data = JSON.parse(localStorage.getItem("data")).data
+        appData = data;
+        document.getElementById("id").value = data.id
+        document.getElementById("full-name").value = data.fullname
+        availableList = document.getElementById("available-movie-list")
+        data.moviedata.map(movie => {
+            const li = document.createElement("li");
+            li.appendChild(document.createTextNode(movie));
+            li.setAttribute("class", "list-group-item");
+            availableList.appendChild(li);
+        })
+    }
+    function renderPurchases() {
+        myPurchaseList = document.getElementById("purchased-movie-list")
+        myPurchases.map(purchase => {
+            const li = document.createElement("li");
+            li.appendChild(document.createTextNode(purchase));
+            li.setAttribute("class", "list-group-item");
+            myPurchaseList.appendChild(li);
+        })
+    }
+    </script>
+</body>
+</html>
