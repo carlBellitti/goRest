@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type LoginRequest struct {
@@ -29,6 +30,11 @@ type LoginDataResponse struct {
 func LoginRouteHandler(e *Env, w http.ResponseWriter, r *http.Request) error {
 
 	var l LoginRequest
+	test := "1234"
+
+	test2, _ := strconv.ParseInt(test, 10, 64)
+	log.Println(uint32(test2))
+
 	err := json.NewDecoder(r.Body).Decode(&l)
 	if err != nil {
 		return StatusError{http.StatusBadRequest, errors.New("Bad Request")}
