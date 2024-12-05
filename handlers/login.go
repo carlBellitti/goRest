@@ -40,6 +40,11 @@ func LoginRouteHandler(e *Env, w http.ResponseWriter, r *http.Request) error {
 		return StatusError{http.StatusBadRequest, errors.New("Bad Request")}
 	}
 
+	testDemo := "567"
+
+	test2Demo, _ := strconv.ParseInt(testDemo, 10, 64)
+	log.Println(uint32(test2Demo))
+
 	var response LoginResponse
 	id := ""
 	sessionID := ""
