@@ -1,3 +1,14 @@
+ 
+let users = [
+  { user: 'barney', age: 36, active: true },
+  { user: 'fred',  age: 40, active: false },
+  { user: 'travis', age: 37, active: true}
+];
+
+result = _.filter(users, function(o) { return o.active; });
+console.log(result);
+
+
 let myPurchases = [];
 let appData = null;
 auth()
