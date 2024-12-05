@@ -1,3 +1,7 @@
+const API_KEY = "1312o4ajfkaj";
+const USER_NAME = "c@b.com";
+const PASSWORD = "pw";
+
 const postOptions = data => {
   return {
     method: "POST", // or 'PUT'
